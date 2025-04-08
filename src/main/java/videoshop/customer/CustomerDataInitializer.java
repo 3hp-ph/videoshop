@@ -84,7 +84,8 @@ class CustomerDataInitializer implements DataInitializer {
 				new RegistrationForm("hans", password, "wurst"),
 				new RegistrationForm("dextermorgan", password, "Miami-Dade County"),
 				new RegistrationForm("earlhickey", password, "Camden County - Motel"),
-				new RegistrationForm("mclovinfogell", password, "Los Angeles")//
+				new RegistrationForm("mclovinfogell", password, "Los Angeles"),
+				new RegistrationForm("ph", "12345", "lorem ipsum")//
 		).forEach(customerManagement::createCustomer);
 	}
 }
