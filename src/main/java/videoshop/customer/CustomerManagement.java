@@ -66,7 +66,7 @@ public class CustomerManagement {
 		var password = UnencryptedPassword.of(form.getPassword());
 		var userAccount = userAccounts.create(form.getName(), password, CUSTOMER_ROLE);
 
-		return customers.save(new Customer(userAccount, form.getAddress()));
+		return customers.save(new Customer(userAccount, form.getAddress(), form.getEmail()));
 	}
 
 	/**

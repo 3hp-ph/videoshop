@@ -37,6 +37,13 @@
                     <p th:if="${#fields.hasErrors('address')}" th:errors="*{address}">Die Adresse darf
                         nicht leer sein.</p>
                 </div>
+                <div class="field">
+                    <label th:text="#{register.email}" for="email">E-Mail</label>
+                    <input id="email" name="email" th:field="*{email}" th:errorclass="fieldError" type="text"
+                           required="required"/><br/>
+                    <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Die E-Mail darf
+                        nicht leer sein.</p>
+                </div>
 
                 <button type="submit" class="ui button" th:text="#{register.submit}">Registrieren</button>
             </form>
