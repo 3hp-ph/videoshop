@@ -12,12 +12,14 @@
                 <tr>
                     <th th:text="#{customers.name}">Name</th>
                     <th th:text="#{customers.address}">Anschrift</th>
+                    <th th:text="#{customers.email}">E-Mail</th>
                 </tr>
                 </thead>
                 <tbody th:remove="all-but-first">
                 <tr th:each=" customer : ${customerList}">
                     <td th:text="${customer.userAccount.id}">Paul</td>
                     <td th:text="${customer.address}">Nöthnitzer Straße 46</td>
+                    <td th:text="${customer.email}">1@example.com</td>
                 </tr>
                 </tbody>
             </table>
