@@ -18,6 +18,7 @@ package videoshop.customer;
 import org.salespointframework.useraccount.Password.UnencryptedPassword;
 import org.salespointframework.useraccount.Role;
 import org.salespointframework.useraccount.UserAccountManagement;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,15 +61,19 @@ public class CustomerManagement {
 	 * @return the new {@link Customer} instance.
 	 */
 	public Customer createCustomer(RegistrationForm form) {
-
 		Assert.notNull(form, "Registration form must not be null!");
 
 		var password = UnencryptedPassword.of(form.getPassword());
 		var userAccount = userAccounts.create(form.getName(), password, CUSTOMER_ROLE);
-
 		return customers.save(new Customer(userAccount, form.getAddress(), form.getEmail()));
 	}
 
+
+	public Customer saveCustomer(Customer customer) {
+		Assert.notNull(customer, "Customer must not be null!");
+
+		return customers.save(customer);
+	}
 	/**
 	 * Returns all {@link Customer}s currently available in the system.
 	 *
