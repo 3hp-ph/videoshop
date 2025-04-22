@@ -27,6 +27,7 @@ import java.util.UUID;
 import org.jmolecules.ddd.types.Identifier;
 import org.salespointframework.core.AbstractAggregateRoot;
 import org.salespointframework.useraccount.UserAccount;
+import org.salespointframework.useraccount.UserAccount.UserAccountIdentifier;
 
 // (｡◕‿◕｡)
 // Salespoint bietet nur eine UserAccount Verwaltung, für weitere Attribute sollte eine extra
@@ -39,7 +40,6 @@ public class Customer extends AbstractAggregateRoot<CustomerIdentifier> {
 	private @EmbeddedId CustomerIdentifier id = new CustomerIdentifier();
 
 	private String address;
-	private String email;
 
 	// (｡◕‿◕｡)
 	// Jedem Customer ist genau ein UserAccount zugeordnet, um später über den UserAccount an den
@@ -57,8 +57,8 @@ public class Customer extends AbstractAggregateRoot<CustomerIdentifier> {
 
 	public Customer(UserAccount userAccount, String address, String email) {
 		this.userAccount = userAccount;
+		this.userAccount.setEmail(email);
 		this.address = address;
-		this.email = email;
 	}
 
 	/*
@@ -79,11 +79,11 @@ public class Customer extends AbstractAggregateRoot<CustomerIdentifier> {
 	}
 
 	public String getEmail() {
-		return email;
+		return userAccount.getEmail();
 	}
 
 	public void setEmail(String email) {
-		this.email = email;
+		userAccount.setEmail(email);
 	}
 
 	public UserAccount getUserAccount() {
@@ -144,5 +144,9 @@ public class Customer extends AbstractAggregateRoot<CustomerIdentifier> {
 
 			return this.identifier.equals(that.identifier);
 		}
+	}
+
+	public UserAccountIdentifier getUserAccountId() {
+		return userAccount.getId();
 	}
 }
