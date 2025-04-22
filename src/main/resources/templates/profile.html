@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout.html}">
+    <head>
+    </head>
+    <body>
+        <section layout:fragment="content">
+            <label th:text="${'Hallo ' + #authentication?.name}">boss</label>
+            <br>
+            <label th:text="#{register.email}">E-Mail</label>
+            <label th:text="${email}">1@example.com</label>
+            <br>
+            <label th:text="${'Adresse: ' + address}">Musterstraße 1</label>
+            <br>
+            <a href="/change" th:text="#{register.change}">
+                <button type="button" class="ui button" th:text="#{register.change}">ÄNdern</button>
+            </a>
+        </section>
+    </body>
+</html>
