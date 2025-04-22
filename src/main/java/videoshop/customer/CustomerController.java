@@ -16,8 +16,17 @@
 package videoshop.customer;
 
 import jakarta.validation.Valid;
+import videoshop.customer.RegistrationForm;
 
+import org.salespointframework.useraccount.UserAccount;
+import org.salespointframework.useraccount.UserAccount.UserAccountIdentifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties.Authentication;
+import org.springframework.data.util.Streamable;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.Assert;
@@ -28,6 +37,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 class CustomerController {
 
+	private static final Logger LOG = LoggerFactory.getLogger(CustomerDataInitializer.class);
 	private final CustomerManagement customerManagement;
 
 	CustomerController(CustomerManagement customerManagement) {
@@ -50,7 +60,7 @@ class CustomerController {
 		}
 
 		// (｡◕‿◕｡)
-		// Falles alles in Ordnung ist legen wir einen Customer an
+		// Falls alles in Ordnung ist legen wir einen Customer an
 		customerManagement.createCustomer(form);
 
 		return "redirect:/";
@@ -61,6 +71,28 @@ class CustomerController {
 		return "register";
 	}
 
+	@PostMapping("/change")
+	@PreAuthorize("hasRole('CUSTOMER')")
+	String change(@Valid RegistrationForm form, Errors result) {
+		//Assert.isTrue(form.isChange(), "RegistrationForm must be a change form!");
+
+		if (result.hasFieldErrors("username") || result.hasFieldErrors("address") || result.hasFieldErrors("email")) {
+			return "change";
+		}
+		Customer c = getCustomer();
+		c.getUserAccount().setUsername(form.getName());
+		c.setAddress(form.getAddress());
+		c.setEmail(form.getEmail());
+		customerManagement.saveCustomer(c);
+		return "redirect:/";
+	}
+
+	@GetMapping("/change")
+	@PreAuthorize("hasRole('CUSTOMER')")
+	String change(Model model, RegistrationForm form) {
+		return "change";
+	}
+
 	@GetMapping("/customers")
 	@PreAuthorize("hasRole('BOSS')")
 	String customers(Model model) {
@@ -68,5 +100,46 @@ class CustomerController {
 		model.addAttribute("customerList", customerManagement.findAll());
 
 		return "customers";
+	}
+
+	@GetMapping("/profile")
+	@PreAuthorize("hasRole('CUSTOMER')")
+	String showProfile(Model model, Authentication authentication) {
+		
+		/*SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String username = userDetails.getUsername();
+		LOG.info("current User: "  + username);
+		Streamable<Customer> allCustomers = customerManagement.findAll();
+		Customer customer = null;
+		for (Customer c : allCustomers) {
+			String cUsername = c.getUserAccount().getUsername();
+			if (cUsername.equals(username)) {
+				customer = c;
+				break;
+			}
+		}*/
+		Customer customer = getCustomer();
+		if (customer == null) {
+			LOG.error("Customer not found for current user.");
+			return "redirect:/";			
+		}
+		model.addAttribute("email", customer.getEmail());
+		model.addAttribute("address", customer.getAddress());
+		return "profile";
+	}
+
+	private Customer getCustomer() {
+		UserDetails details = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		//UserAccountIdentifier uid = (UserAccountIdentifier) details;
+		Customer customer = null;
+		for (Customer c : customerManagement.findAll()) {
+			if (c.getUserAccount().getUsername().equals(details.getUsername())) {
+				customer = c;
+				break;
+			}
+		}
+		return customer;
+		//c.getUserAccount().getId() == acc.getId()
 	}
 }
