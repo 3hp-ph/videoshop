@@ -16,14 +16,9 @@
 package videoshop.customer;
 
 import jakarta.validation.Valid;
-import videoshop.customer.RegistrationForm;
-
-import org.salespointframework.useraccount.UserAccount;
-import org.salespointframework.useraccount.UserAccount.UserAccountIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties.Authentication;
-import org.springframework.data.util.Streamable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
